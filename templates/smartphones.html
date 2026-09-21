@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY_STORE — Флагманские Смартфоны</title>
+    <style>
+        /* --- ЦВЕТОВАЯ ПАЛИТРА (МОЛОЧНЫЙ APPLE STYLE) --- */
+        :root {
+            --bg-color: #f7f6f2; /* Мягкий молочно-белый фон */
+            --card-bg: rgba(255, 255, 255, 0.85); /* Белое стекло */
+            --nav-bg: rgba(247, 246, 242, 0.8);
+            --accent-color: #0066cc; /* Классический акцентный синий Apple */
+            --accent-gradient: linear-gradient(135deg, #0066cc 0%, #5e5ce6 100%);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --blur: blur(20px);
+        }
+
+        /* --- СБРОС И ОСНОВНЫЕ СТИЛИ --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.47059;
+            letter-spacing: -0.022em;
+        }
+
+        /* --- НАВИГАЦИЯ --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--nav-bg);
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        /* --- КНОПКИ --- */
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            padding: 12px 26px;
+            border-radius: 980px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 102, 204, 0.35);
+        }
+
+        /* --- ГЛАВНЫЙ БАННЕР --- */
+        .hero {
+            position: relative;
+            padding: 140px 24px 80px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 980px;
+            background: rgba(0, 102, 204, 0.08);
+            border: 1px solid rgba(0, 102, 204, 0.2);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-color);
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            max-width: 800px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 580px;
+            margin-bottom: 32px;
+        }
+
+        .hero-banner {
+            width: 100%;
+            max-width: 1000px;
+            height: 480px;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            margin-top: 20px;
+        }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* --- КАТАЛОГ И КАРТОЧКИ --- */
+        .catalog {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 120px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 40px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            backdrop-filter: var(--blur);
+            -webkit-backdrop-filter: var(--blur);
+            box-shadow: var(--card-shadow);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--card-shadow-hover);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .tag-new { background: #0066cc; color: #fff; }
+        .tag-promo { background: #ff3b30; color: #fff; }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 280px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: #eae9e4;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.04);
+        }
+
+        .card-info h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .card-info ul {
+            list-style: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .card-info ul li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-info ul li::before {
+            content: "•";
+            color: var(--accent-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -0.8em;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 18px;
+        }
+
+        .price-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .price-old {
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+
+        /* --- ФУТЕР --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .hero-banner { height: 260px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">MY_STORE</div>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li><a href="#pro-1">Pro Line</a></li>
+                <li><a href="#ultra-1">Ultra Series</a></li>
+                <li><a href="#catalog">Акции</a></li>
+            </ul>
+            <a href="#catalog" class="btn-primary">В каталог</a>
+        </div>
+    </nav>
+
+    <!-- ГЛАВНЫЙ БАННЕР -->
+    <section class="hero">
+        <span class="badge">Флагманы 2026 года</span>
+        <h1>Превосходство в каждой детали.</h1>
+        <p>Встречайте новые флагманские смартфоны с продвинутыми камерами и лёгким корпусом.</p>
+
+        <div class="hero-banner">
+            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200&auto=format&fit=crop" alt="Флагманский телефон">
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ С ТОВАРНЫМИ КАРТОЧКАМИ -->
+    <section class="catalog" id="catalog">
+        <h2 class="section-title">Флагманская линейка</h2>
+        <p class="section-subtitle">Выберите устройство, которое подходит именно вам</p>
+
+        <div class="grid">
+
+            <!-- ТЕЛЕФОН 1 -->
+            <div class="card" id="pro-1">
+                <span class="card-tag tag-new">Новинка</span>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?q=80&w=800&auto=format&fit=crop" alt="Pro Phone Ultra">
+                </div>
+                <div class="card-info">
+                    <h3>Pro Phone Ultra</h3>
+                    <ul>
+                        <li>Титановый корпус и стекло Ceramic</li>
+                        <li>Экран 6.8" OLED 120 Гц</li>
+                        <li>Тройная система камер 200 МП</li>
+                    </ul>
+                </div>
+                <div class="card-bottom">
+                    <div class="price-container">
+                        <span class="price">99 990 ₽</span>
+                    </div>
+                    <button class="btn-primary">Купить</button>
+                </div>
+            </div>
+
+            <!-- ТЕЛЕФОН 2 (IPHONE) -->
+            <div class="card" id="iphone-17">
+                <span class="card-tag tag-new">Флагман</span>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?q=80&w=800&auto=format&fit=crop" alt="iPhone 17 Pro Max">
+                </div>
+                <div class="card-info">
+                    <h3>iPhone 17 Pro Max</h3>
+                    <ul>
+                        <li>Титановый корпус и стекло Ceramic</li>
+                        <li>Экран 6.8" OLED 120 Гц</li>
+                        <li>Тройная система камер 200 МП</li>
+                    </ul>
+                </div>
+                <div class="card-bottom">
+                    <div class="price-container">
+                        <span class="price">80 990 ₽</span>
+                    </div>
+                    <button class="btn-primary">Купить</button>
+                </div>
+            </div>
+
+            <!-- ТЕЛЕФОН 3 -->
+            <div class="card" id="ultra-1">
+                <span class="card-tag tag-promo">Акция -18%</span>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1580910051074-3eb694886505?q=80&w=800&auto=format&fit=crop" alt="MY Phone X Pro">
+                </div>
+                <div class="card-info">
+                    <h3>MY Phone X Pro</h3>
+                    <ul>
+                        <li>Интеллектуальный процессор 3нм</li>
+                        <li>Батарея 5500 мАч и быстрая зарядка</li>
+                        <li>Защита от воды IP68</li>
+                    </ul>
+                </div>
+                <div class="card-bottom">
+                    <div class="price-container">
+                        <span class="price">79 990 ₽</span>
+                        <span class="price-old">94 990 ₽</span>
+                    </div>
+                    <button class="btn-primary">Купить</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+            {% for phone in phones %}
+
+            <div>
+                {% if phone.image_url %}
+                {% endif %}
+
+                <h2>{{ phone.name }}</h2>
+                <p>{{ phone.price }} сом</p>
+                <p>{{ phone.description }}</p>
+            </div>
+
+            {% empty %}
+
+            <p>Телефонов пока нет.</p>
+
+            {% endfor %}
+    <!-- ФУТЕР -->
+    <footer>
+        <p>© 2026 MY_STORE. Все права защищены. Светлый премиальный дизайн.</p>
+    </footer>
+
+</body>
+</html>

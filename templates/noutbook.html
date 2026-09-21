@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY_STORE — Флагманские Ноутбуки</title>
+    <style>
+        /* --- СБРОС СТИЛЕЙ И БАЗОВЫЕ НАСТРОЙКИ (WARM MINIMALISM) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --bg-color: #f7f6f2;          /* Тёплый светлый фон */
+            --card-bg: #ffffff;          /* Чистый белый для контрастных карточек */
+            --card-subtle: #f0eee6;      /* Мягкий бежево-серый тон */
+            --accent-primary: #4f46e5;   /* Глубокий индиго / фиолетово-синий */
+            --accent-secondary: #059669; /* Свежий изумрудный для акцентов */
+            --text-primary: #18181b;      /* Насыщенный графитовый */
+            --text-secondary: #65656e;    /* Мягкий серый для описаний */
+            --border-color: rgba(0, 0, 0, 0.07);
+            --shadow-subtle: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px -10px rgba(79, 70, 229, 0.12);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* --- НАВИГАЦИЯ --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(247, 246, 242, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            color: var(--text-primary);
+        }
+
+        .logo span {
+            color: var(--accent-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* --- КНОПКИ --- */
+        .btn-primary {
+            background: var(--accent-primary);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 980px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+        }
+
+        /* --- ГЛАВНЫЙ БАННЕР --- */
+        .hero {
+            position: relative;
+            padding: 160px 24px 80px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 980px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 58px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            max-width: 850px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 620px;
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        .hero-banner {
+            width: 100%;
+            max-width: 1000px;
+            height: 480px;
+            border-radius: 32px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-subtle);
+            margin-top: 20px;
+            background: var(--card-subtle);
+        }
+
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* --- СЕКЦИЯ КАТАЛОГА --- */
+        .catalog {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+        }
+
+        /* --- КАРТОЧКА НОУТБУКА --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 28px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 980px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        .tag-new { background: rgba(79, 70, 229, 0.1); color: var(--accent-primary); }
+        .tag-promo { background: rgba(5, 150, 105, 0.1); color: var(--accent-secondary); }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 220px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: var(--card-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .card-info h3 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .card-info ul {
+            list-style: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 24px;
+            padding-left: 18px;
+        }
+
+        .card-info ul li {
+            margin-bottom: 8px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .card-info ul li::before {
+            content: "•";
+            color: var(--accent-primary);
+            font-weight: bold;
+            position: absolute;
+            left: -14px;
+            top: 0;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 18px;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .price {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .price-old {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+
+        /* --- ФУТЕР --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 60px 24px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            background: var(--bg-color);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 38px; }
+            .hero p { font-size: 16px; }
+            .hero-banner { height: 260px; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">MY_<span>STORE</span></div>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Главная страница</a></li>
+                <li><a href="#ultrabook">Ultrabook Pro</a></li>
+                <li><a href="#gaming">Gaming Max</a></li>
+                <li><a href="#promo">Акции</a></li>
+            </ul>
+            <a href="#catalog" class="btn-primary">В каталог</a>
+        </div>
+    </nav>
+
+    <!-- ГЛАВНЫЙ БАННЕР -->
+    <section class="hero">
+        <span class="badge">Новое Поколение Ноутбуков</span>
+        <h1>Невероятная мощь.<br>Бесконечная автономность.</h1>
+        <p>Флагманские ультрабуки с дисплеем высокой точности и процессорами нового поколения для любых профессиональных задач.</p>
+
+        <div class="hero-banner">
+            <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1200&auto=format&fit=crop" alt="Флагманский Ноутбук MY_STORE">
+        </div>
+    </section>
+
+    <!-- КАТАЛОГ НОУТБУКОВ -->
+    <section class="catalog" id="catalog">
+        <h2 class="section-title">Флагманские модели</h2>
+        <p class="section-subtitle">Выберите производительность под свои задачи</p>
+
+        <div class="grid">
+
+            <!-- НОУТБУК 1 -->
+            <div class="card" id="ultrabook">
+                <span class="card-tag tag-new">Новинка</span>
+                <div class="card-img-wrapper">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3K4_XxMO9sjtZVOQIn3e1KDpZosapm3Hw12YvamCruA&s=10" alt="Ultrabook Pro 16">
+                </div>
+                <div class="card-info">
+                    <h3>Ultrabook Pro 16</h3>
+                    <ul>
+                        <li>Процессор 12 ядер, 32 ГБ Объединённой памяти</li>
+                        <li>Дисплей Liquid Retina XDR 120 Гц</li>
+                        <li>До 22 часов работы от одного заряда</li>
+                    </ul>
+                </div>
+                <div class="card-bottom">
+                    <div class="price-container">
+                        <span class="price">169 990 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- НОУТБУК 2 -->
+            <div class="card" id="abook">
+                <span class="card-tag tag-new">Новинка</span>
+                <div class="card-img-wrapper">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnVNE8WiUGLqbEe1-a3DbQq_1MgZzjXTwSnpVMT9drsA&s=10" alt="Ultrabook">
+                </div>
+                <div class="card-info">
+                    <h3>Ultrabook</h3>
+                    <ul>
+                        <li>Процессор 12 ядер, 32 ГБ Объединённой памяти</li>
+                        <li>Дисплей Liquid Retina XDR 120 Гц</li>
+                        <li>До 22 часов работы от одного заряда</li>
+                    </ul>
+                </div>
+                <div class="card-bottom">
+                    <div class="price-container">
+                        <span class="price">169 990 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- НОУТБУК 3 -->
+            <div class="card" id="gaming">
+                <span class="card-tag tag-promo">Скидка -15%</span>
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=800&auto=format&fit=crop" alt="MY Book Studio 14">
+                </div>
+                <div class="card-info">
+                    <h3>MY Book Studio 14</h3>
+                    <ul>
+                        <li>Ультратонкий алюминиевый корпус 1.2 кг</li>
+                        <li>OLED экран 2.8K с точной цветопередачей</li>
+                        <li>Быстрая зарядка Type-C 100 Вт</li>
+                    </ul>
+                </div>
+                <div class="card-bottom">
+                    <div class="price-container">
+                        <span class="price">124 990 ₽</span>
+                        <span class="price-old">146 990 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ФУТЕР -->
+    <footer>
+        <p>© 2026 MY_STORE. Все права защищены. Премиальная электроника.</p>
+    </footer>
+
+</body>
+</html>

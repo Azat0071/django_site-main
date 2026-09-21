@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY_STORE — Флагманская электроника</title>
+    <style>
+        /* --- СБРОС И ЦВЕТОВАЯ ПАЛИТРА (WARM MINIMALISM) --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        :root {
+            --bg-color: #f7f6f2;          /* Тёплый светлый фон (Warm Canvas) */
+            --card-bg: #ffffff;          /* Чистый белый для контрастных карточек */
+            --card-subtle: #f0eee6;      /* Мягкий бежево-серый тон */
+            --accent-primary: #4f46e5;   /* Глубокий индиго / фиолетово-синий */
+            --accent-secondary: #059669; /* Свежий изумрудный для меток */
+            --text-primary: #18181b;      /* Насыщенный графитовый (не чистый чёрный) */
+            --text-secondary: #65656e;    /* Мягкий серый для описаний */
+            --border-color: rgba(0, 0, 0, 0.07);
+            --shadow-subtle: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 40px -10px rgba(79, 70, 229, 0.12);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* --- НАВИГАЦИЯ --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(247, 246, 242, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            color: var(--text-primary);
+        }
+
+        .logo span {
+            color: var(--accent-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        /* --- КНОПКИ --- */
+        .btn-primary {
+            background: var(--accent-primary);
+            color: #ffffff;
+            padding: 12px 28px;
+            border-radius: 980px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 12px 28px;
+            border-radius: 980px;
+            border: 1px solid var(--border-color);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .btn-secondary:hover {
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* --- РЕКЛАМНЫЙ БАННЕР (HERO SECTION) --- */
+        .hero {
+            position: relative;
+            padding: 160px 24px 80px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 980px;
+            background: rgba(79, 70, 229, 0.08);
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            max-width: 900px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 16px;
+        }
+
+        .hero-image-mock {
+            margin-top: 60px;
+            width: 100%;
+            max-width: 960px;
+            height: 400px;
+            background: linear-gradient(135deg, #ffffff 0%, var(--card-subtle) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-subtle);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-image-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+        }
+
+        /* --- ТОВАРНЫЕ КАТЕГОРИИ --- */
+        .section-title {
+            text-align: center;
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+        }
+
+        .products-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 28px;
+        }
+
+        /* --- МИНИМАЛИСТИЧНАЯ КАРТОЧКА --- */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            box-shadow: var(--shadow-subtle);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(79, 70, 229, 0.2);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 980px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tag-new { background: rgba(79, 70, 229, 0.1); color: var(--accent-primary); }
+        .tag-promo { background: rgba(5, 150, 105, 0.1); color: var(--accent-secondary); }
+
+        .card-img-placeholder {
+            width: 100%;
+            height: 180px;
+            margin: 24px 0;
+            border-radius: 18px;
+            background: var(--card-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .card img {
+            width: 100%;
+            height: 180px;
+            object-fit: contain;
+            margin: 24px 0;
+        }
+
+        .card-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .card-info p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .price-old {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            margin-left: 6px;
+        }
+
+        /* --- ФОРМА РЕГИСТРАЦИИ --- */
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 44px 36px;
+            max-width: 420px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-subtle);
+        }
+
+        .auth-header h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .auth-header p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+
+        .auth-form input {
+            width: 100%;
+            background-color: var(--card-subtle) !important;
+            color: var(--text-primary) !important;
+            border: 1px solid transparent !important;
+            padding: 14px 18px;
+            border-radius: 14px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.2s ease;
+            margin-bottom: 14px;
+        }
+
+        .auth-form input:focus {
+            border-color: var(--accent-primary) !important;
+            background-color: #ffffff !important;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .auth-form .btn-submit {
+            width: 100%;
+            background-color: var(--accent-primary) !important;
+            color: #ffffff !important;
+            border: none !important;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+        }
+
+        .auth-form .btn-submit:hover {
+            background-color: #4338ca !important;
+            transform: translateY(-1px);
+        }
+
+        /* --- ФУТЕР --- */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 80px 24px 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            background: var(--bg-color);
+        }
+
+        /* --- АДАПТИВНОСТЬ --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 40px; }
+            .hero p { font-size: 16px; }
+            .nav-links { display: none; }
+            .hero-image-mock { height: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">MY_<span>STORE</span></div>
+            <ul class="nav-links">
+                <li><a href="{% url 'smartphones' %}">Телефоны</a></li>
+                <li><a href="{% url 'noutbooks' %}">Ноутбуки</a></li>
+                <li><a href="{% url 'musics' %}">Наушники</a></li>
+                <li><a href="{% url 'wathchas' %}">Часы</a></li>
+            </ul>
+            <div class="nav-actions">
+            </div>
+        </div>
+    </nav>
+
+    <!-- ГЛАВНЫЙ РЕКЛАМНЫЙ БАННЕР -->
+    <section class="hero">
+        <span class="badge">Премьера 2026</span>
+        <h1>Технологии в гармонии с стилем.</h1>
+        <p>Откройте для себя коллекцию устройств в продуманном и лаконичном исполнении.</p>
+        <div class="hero-btns">
+            <a href="#products" class="btn-primary">Смотреть каталог</a>
+            <a href="#promo" class="btn-secondary">Узнать про акции</a>
+        </div>
+        <div class="hero-image-mock">
+            <div class="hero-image-text">ФЛАГМАНСКАЯ ЛИНЕЙКА MY_STORE</div>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ ТОВАРОВ -->
+    <section class="products-section" id="products">
+        <h2 class="section-title">Новинки и Акции</h2>
+        <p class="section-subtitle">Передовые устройства в эстетичном дизайне</p>
+
+        <div class="grid">
+
+            <!-- 1. ТЕЛЕФОН -->
+            <div class="card" id="phones">
+                <span class="card-tag tag-new">Новинка</span>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1ErCaGjnDfNqiUL_7MUxawsxrKQ7ooF_lkXNwR99shg&s" alt="Телефон">
+                <div class="card-info">
+                    <h3>Pro Phone Ultra</h3>
+                    <p>Процессор 3нм, титановый корпус, дисплей 120 Гц и инновационная камера.</p>
+                </div>
+                <div class="card-bottom">
+                    <div>
+                        <span class="price">99 990 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. НОУТБУК -->
+            <div class="card" id="laptops">
+                <span class="card-tag tag-promo">Акция -15%</span>
+                <div class="card-img-placeholder">💻</div>
+                <div class="card-info">
+                    <h3>Ultrabook Max 16</h3>
+                    <p>Невероятная автономность до 22 часов, тонкий профиль и мощная графика.</p>
+                </div>
+                <div class="card-bottom">
+                    <div>
+                        <span class="price">149 990 ₽</span>
+                        <span class="price-old">175 000 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. НАУШНИКИ -->
+            <div class="card" id="audio">
+                <span class="card-tag tag-new">Новинка</span>
+                <div class="card-img-placeholder">🎧</div>
+                <div class="card-info">
+                    <h3>Sound Studio Pro</h3>
+                    <p>Активное шумоподавление, пространственный звук и чистейшие басы.</p>
+                </div>
+                <div class="card-bottom">
+                    <div>
+                        <span class="price">24 990 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ЧАСЫ -->
+            <div class="card" id="watches">
+                <span class="card-tag tag-promo">Хит продаж</span>
+                <div class="card-img-placeholder">⌚</div>
+                <div class="card-info">
+                    <h3>Smart Watch X</h3>
+                    <p>Мониторинг здоровья, сапфировое стекло и водозащита 50м.</p>
+                </div>
+                <div class="card-bottom">
+                    <div>
+                        <span class="price">32 990 ₽</span>
+                        <span class="price-old">39 990 ₽</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ФУТЕР С ФОРМОЙ -->
+    <footer>
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Регистрация</h2>
+                <p>Создайте аккаунт в MY_STORE</p>
+            </div>
+
+            <!-- Форма регистрации -->
+            <form class="auth-form" onsubmit="return false;">
+                <input type="text" placeholder="Имя" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Пароль" required>
+
+                <button type="submit" class="btn-submit">Зарегистрироваться</button>
+            </form>
+        </div>
+
+        <br><br>
+        <p>© 2026 MY_STORE. Все права защищены. Премиальный дизайн электроники.</p>
+    </footer>
+
+</body>
+</html>
