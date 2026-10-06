@@ -3,175 +3,736 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LaptopStore — Магазин Ноутбуков</title>
-    <!-- Bootstrap 5 CSS для быстрого и красивого дизайна -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Иконки FontAwesome -->
+    <title>TechPro Laptop Store — Современные ноутбуки</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f6ff',
+                            100: '#e0edff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            accent: '#8b5cf6',
+                        },
+                        dark: {
+                            bg: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155',
+                            hover: '#475569'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        .hero-banner {
-            background: linear-gradient(135deg, #5800b7 0%, #56328d 100%);
-            color: #ffffff;
-            padding: 60px 0;
-            border-radius: 0 0 20px 20px;
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
         }
-        .card-laptop {
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            height: 100%;
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.3);
         }
-        .card-laptop:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
         }
-        .laptop-img {
-            height: 200px;
-            object-fit: contain;
-            padding: 15px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-        .badge-stock {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
         }
-        .price {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: #48058f;
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
         }
-        .old-price {
-            text-decoration: line-through;
-            color: #888;
-            font-size: 0.9rem;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
         }
     </style>
 </head>
-<body class="bg-light">
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#"><i class="fa-solid fa-laptop me-2"></i>LaptopStore</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link active" href="#">Главная</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#catalog">Акции</a></li>
-                </ul>
-                <!-- Панель управления / Вход -->
-                <div class="d-flex align-items-center gap-2">
-                    {% if user.is_staff %}
-                        <!-- Ссылка на админку Django для добавления товаров -->
-                        <a href="/admin/shop/laptop/add/" target="_blank" class="btn btn-warning btn-sm">
-                            <i class="fa-solid fa-plus me-1"></i> Добавить ноутбук
-                        </a>
-                        <a href="/admin/" target="_blank" class="btn btn-outline-light btn-sm">
-                            <i class="fa-solid fa-user-shield me-1"></i> Админка
-                        </a>
-                    {% endif %}
-                    <a href="#" class="btn btn-primary btn-sm">
-                        <i class="fa-solid fa-cart-shopping me-1"></i> Корзина
-                    </a>
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-dark-border transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="filterCategory('all')">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-accent flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-500/30">
+                        <i class="fa-solid fa-laptop"></i>
+                    </div>
+                    <span class="text-2xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                        Tech<span class="text-brand-500">Pro</span>
+                    </span>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        oninput="handleSearch()"
+                        placeholder="Поиск ноутбуков (например: MacBook, RTX, Asus)..."
+                        class="w-full bg-slate-800/80 text-sm text-slate-100 placeholder-slate-400 rounded-full py-2.5 pl-11 pr-4 border border-slate-700 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
+                    >
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                </div>
+
+                <!-- Right Nav Controls -->
+                <div class="flex items-center space-x-4">
+                    <!-- Favorites / Wishlist Mock -->
+                    <button class="p-2.5 rounded-full text-slate-300 hover:text-white hover:bg-slate-800 transition-colors relative">
+                        <i class="fa-regular fa-heart text-xl"></i>
+                    </button>
+
+                    <!-- Cart Button -->
+                    <button
+                        onclick="toggleCartModal()"
+                        class="relative flex items-center space-x-2 bg-gradient-to-r from-brand-600 to-brand-accent hover:from-brand-500 hover:to-brand-600 text-white px-4 py-2.5 rounded-xl font-medium shadow-md shadow-brand-500/20 transition-all transform active:scale-95"
+                    >
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="hidden sm:inline">Корзина</span>
+                        <span id="cartCount" class="bg-white text-brand-600 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center ml-1">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="pb-4 md:hidden">
+                <div class="relative">
+                    <input
+                        type="text"
+                        id="mobileSearchInput"
+                        oninput="handleSearchMobile()"
+                        placeholder="Поиск ноутбуков..."
+                        class="w-full bg-slate-800 text-sm text-slate-100 placeholder-slate-400 rounded-full py-2.5 pl-11 pr-4 border border-slate-700 focus:outline-none focus:border-brand-500"
+                    >
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <!-- Главный баннер -->
-    <header class="hero-banner text-center mb-5">
-        <div class="container">
-            <h1 class="display-4 fw-bold">Найдите свой идеальный ноутбук</h1>
-            <p class="lead">Лучшие цены на игровые, ультрабуки и рабочие станции</p>
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_EbtwKwoUNRJMx4qSkTBPFgoTB4SZXXw-KENaNH70COjaU2yMfgV9hq4&s=10" style="border-radius: 10px">
-        </div>
     </header>
 
-    <!-- Основной контент -->
-    <main class="container my-4" id="catalog">
-        <div class="row">
-            <!-- Поиск и фильтр -->
-            <div class="col-md-12 mb-4">
-                <form method="GET" class="row g-3">
-                    <div class="col-md-8">
-                        <input type="text" name="q" class="form-control" placeholder="Поиск по названию или бренду..." value="{{ request.GET.q }}">
-                    </div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="fa-solid fa-magnifying-glass me-1"></i> Найти
+    <!-- Hero Banner -->
+    <section class="relative overflow-hidden py-12 md:py-20 lg:py-24 border-b border-dark-border bg-gradient-to-b from-slate-900 to-dark-bg">
+        <div class="absolute inset-0 z-0 opacity-30">
+            <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-500 rounded-full blur-3xl"></div>
+            <div class="absolute top-60 -left-20 w-80 h-80 bg-brand-accent rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6 text-center lg:text-left">
+                    <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-500 border border-brand-500/20">
+                        <i class="fa-solid fa-fire mr-1.5"></i> Главная распродажа года
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
+                        Мощность без <br class="hidden sm:inline">
+                        <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-500 via-purple-400 to-brand-accent">
+                            компромиссов.
+                        </span>
+                    </h1>
+                    <p class="text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0">
+                        Откройте для себя флагманские игровые ноутбуки, легкие ультрабуки и надежные рабочие станции с доставкой в день заказа.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-4 pt-2">
+                        <a href="#catalog" class="w-full sm:w-auto text-center px-8 py-4 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5">
+                            Смотреть каталог
+                        </a>
+                        <button onclick="filterCategory('gaming')" class="w-full sm:w-auto text-center px-8 py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold rounded-xl transition-all">
+                            Игровые новинки
                         </button>
                     </div>
-                </form>
-            </div>
+                </div>
 
-            <!-- Список ноутбуков из базы данных -->
-            {% for laptop in laptops %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="card card-laptop position-relative">
-                        <!-- Метка наличия -->
-                        {% if laptop.is_available %}
-                            <span class="badge bg-success badge-stock">В наличии</span>
-                        {% else %}
-                            <span class="badge bg-secondary badge-stock">Под заказ</span>
-                        {% endif %}
-
-                        <!-- Картинка товара из Django ImageField -->
-                        {% if laptop.image %}
-                            <img src="{{ laptop.image.url }}" class="card-img-top laptop-img" alt="{{ laptop.title }}">
-                        {% else %}
-                            <img src="https://via.placeholder.com/300x200?text=Нет+фото" class="card-img-top laptop-img" alt="Нет изображения">
-                        {% endif %}
-
-                        <div class="card-body d-flex flex-column">
-                            <small class="text-muted text-uppercase fw-bold">{{ laptop.brand }}</small>
-                            <h5 class="card-title fw-bold text-dark mt-1">{{ laptop.title }}</h5>
-
-                            <!-- Краткие характеристики -->
-                            <ul class="list-unstyled text-muted small my-3">
-                                <li><i class="fa-solid fa-microchip me-2 text-primary"></i><strong>Процессор:</strong> {{ laptop.processor }}</li>
-                                <li><i class="fa-solid fa-memory me-2 text-primary"></i><strong>ОЗУ:</strong> {{ laptop.ram }} ГБ</li>
-                                <li><i class="fa-solid fa-hard-drive me-2 text-primary"></i><strong>Накопитель:</strong> {{ laptop.storage }}</li>
-                                <li><i class="fa-solid fa-tv me-2 text-primary"></i><strong>Экран:</strong> {{ laptop.screen_size }}"</li>
-                            </ul>
-
-                            <div class="mt-auto d-flex justify-content-between align-items-center pt-3 border-top">
-                                <div>
-                                    <div class="price">{{ laptop.price }} ₽</div>
-                                    {% if laptop.old_price %}
-                                        <div class="old-price">{{ laptop.old_price }} ₽</div>
-                                    {% endif %}
-                                </div>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="fa-solid fa-cart-plus me-1"></i> В корзину
-                                </button>
+                <!-- Hero Image Showcase -->
+                <div class="relative flex justify-center">
+                    <div class="relative w-full max-w-lg">
+                        <div class="absolute inset-0 bg-gradient-to-r from-brand-500 to-purple-600 rounded-3xl blur-2xl opacity-40 animate-pulse"></div>
+                        <img
+                            src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=1000&q=80"
+                            alt="Флагманский Ноутбук"
+                            class="relative z-10 rounded-2xl border border-slate-700/60 shadow-2xl object-cover w-full h-[320px] sm:h-[400px] hover:scale-[1.02] transition-transform duration-500"
+                        />
+                        <!-- Badge -->
+                        <div class="absolute -bottom-6 -left-6 z-20 bg-slate-800/90 backdrop-blur-md border border-slate-700 p-4 rounded-xl shadow-2xl hidden sm:flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-green-500/20 text-green-400 rounded-lg flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-400">Быстрая доставка</p>
+                                <p class="text-sm font-bold text-white">Бесплатно от 50 000 ₽</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            {% empty %}
-                <!-- Сообщение, если ноутбуков пока нет в базе -->
-                <div class="col-12 text-center py-5">
-                    <i class="fa-solid fa-laptop-slash fa-3x text-muted mb-3"></i>
-                    <h3>Ноутбуки не найдены</h3>
-                    {% if user.is_staff %}
-                        <a href="/admin/shop/laptop/add/" class="btn btn-primary mt-2">Добавить товар в Админке</a>
-                    {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Store Advantages -->
+    <section class="py-10 border-b border-dark-border bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 text-center lg:text-left">
+                <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-2 lg:space-y-0 lg:space-x-4 p-4 rounded-xl bg-slate-800/30 border border-slate-800">
+                    <div class="p-3 bg-brand-500/10 text-brand-500 rounded-xl">
+                        <i class="fa-solid fa-shield-halved text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm">Гарантия до 2 лет</h4>
+                        <p class="text-slate-400 text-xs mt-1">Официальное обслуживание</p>
+                    </div>
                 </div>
-            {% endfor %}
+
+                <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-2 lg:space-y-0 lg:space-x-4 p-4 rounded-xl bg-slate-800/30 border border-slate-800">
+                    <div class="p-3 bg-brand-500/10 text-brand-500 rounded-xl">
+                        <i class="fa-solid fa-credit-card text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm">Рассрочка 0%</h4>
+                        <p class="text-slate-400 text-xs mt-1">Без переплат до 24 месяцев</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-2 lg:space-y-0 lg:space-x-4 p-4 rounded-xl bg-slate-800/30 border border-slate-800">
+                    <div class="p-3 bg-brand-500/10 text-brand-500 rounded-xl">
+                        <i class="fa-solid fa-headset text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm">Поддержка 24/7</h4>
+                        <p class="text-slate-400 text-xs mt-1">Поможем с выбором товара</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row items-center lg:items-start space-y-2 lg:space-y-0 lg:space-x-4 p-4 rounded-xl bg-slate-800/30 border border-slate-800">
+                    <div class="p-3 bg-brand-500/10 text-brand-500 rounded-xl">
+                        <i class="fa-solid fa-rotate-left text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-sm">Возврат 14 дней</h4>
+                        <p class="text-slate-400 text-xs mt-1">Простой и быстрый возврат</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full">
+        <!-- Section Title & Filter Tabs -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+            <div>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Каталог ноутбуков</h2>
+                <p class="text-slate-400 text-sm mt-1">Выберите устройство под ваши задачи</p>
+            </div>
+
+            <!-- Category Filters -->
+            <div class="flex items-center space-x-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                <button
+                    onclick="filterCategory('all')"
+                    data-category="all"
+                    class="filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-brand-600 text-white whitespace-nowrap shadow-md shadow-brand-500/20"
+                >
+                    Все модели
+                </button>
+                <button
+                    onclick="filterCategory('gaming')"
+                    data-category="gaming"
+                    class="filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap"
+                >
+                    <i class="fa-solid fa-gamepad mr-1.5"></i> Игровые
+                </button>
+                <button
+                    onclick="filterCategory('ultrabook')"
+                    data-category="ultrabook"
+                    class="filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap"
+                >
+                    <i class="fa-solid fa-feather mr-1.5"></i> Ультрабуки
+                </button>
+                <button
+                    onclick="filterCategory('work')"
+                    data-category="work"
+                    class="filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap"
+                >
+                    <i class="fa-solid fa-briefcase mr-1.5"></i> Для работы
+                </button>
+                <button
+                    onclick="filterCategory('apple')"
+                    data-category="apple"
+                    class="filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap"
+                >
+                    <i class="fa-brands fa-apple mr-1.5"></i> Apple
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Dynamic JavaScript Rendering will insert cards here -->
+        </div>
+
+        <!-- Empty State Message -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="w-16 h-16 mx-auto mb-4 bg-slate-800 rounded-full flex items-center justify-center text-slate-500 text-2xl">
+                <i class="fa-solid fa-laptop-code"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Ноутбуки не найдены</h3>
+            <p class="text-slate-400 text-sm">Попробуйте изменить параметры поиска или фильтры</p>
+            <button onclick="filterCategory('all')" class="mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-brand-500 rounded-lg text-sm font-medium border border-slate-700">
+                Сбросить фильтры
+            </button>
         </div>
     </main>
 
-    <!-- Подвал -->
-    <footer class="bg-dark text-white text-center py-4 mt-5">
-        <div class="container">
-            <p class="mb-0">&copy; 2026 LaptopStore. Все права защищены.</p>
+    <!-- Shopping Cart Modal Window -->
+    <div id="cartModal" class="fixed inset-0 z-50 hidden transition-opacity duration-300">
+        <!-- Backdrop -->
+        <div onclick="toggleCartModal()" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+
+        <!-- Modal Content Container -->
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-slate-900 border-l border-slate-800 text-white shadow-2xl flex flex-col justify-between">
+
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping text-brand-500 text-xl"></i>
+                        <h3 class="text-lg font-bold">Корзина покупок</h3>
+                    </div>
+                    <button onclick="toggleCartModal()" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items List -->
+                <div id="cartItemsContainer" class="p-6 flex-1 overflow-y-auto space-y-4">
+                    <!-- Dynamic cart items will appear here -->
+                </div>
+
+                <!-- Cart Footer & Checkout -->
+                <div class="p-6 border-t border-slate-800 bg-slate-900/90 space-y-4">
+                    <div class="flex items-center justify-between text-base font-semibold text-slate-300">
+                        <span>Итоговая сумма:</span>
+                        <span id="cartTotalPrice" class="text-2xl font-black text-white">0 ₽</span>
+                    </div>
+                    <button
+                        onclick="checkout()"
+                        class="w-full py-3.5 bg-gradient-to-r from-brand-600 to-brand-accent hover:from-brand-500 hover:to-brand-600 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 transition-all transform active:scale-95 text-center"
+                    >
+                        Оформить заказ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 bg-slate-800 text-white border border-slate-700 px-5 py-3.5 rounded-xl shadow-2xl flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">
+            <i class="fa-solid fa-check"></i>
+        </div>
+        <div>
+            <p id="toastTitle" class="text-sm font-semibold">Товар добавлен</p>
+            <p id="toastDesc" class="text-xs text-slate-400">Ноутбук успешно помещен в корзину</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-400 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <!-- Col 1 -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold">
+                            <i class="fa-solid fa-laptop"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">Tech<span class="text-brand-500">Pro</span></span>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Ваш надежный гид в мире высокопроизводительных ноутбуков и передовых технологий.
+                    </p>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <h5 class="text-white text-sm font-semibold mb-4">Категории</h5>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#" onclick="filterCategory('gaming')" class="hover:text-brand-500 transition-colors">Игровые ноутбуки</a></li>
+                        <li><a href="#" onclick="filterCategory('ultrabook')" class="hover:text-brand-500 transition-colors">Ультрабуки</a></li>
+                        <li><a href="#" onclick="filterCategory('work')" class="hover:text-brand-500 transition-colors">Для работы и учебы</a></li>
+                        <li><a href="#" onclick="filterCategory('apple')" class="hover:text-brand-500 transition-colors">MacBook Pro & Air</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <h5 class="text-white text-sm font-semibold mb-4">Покупателям</h5>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Доставка и оплата</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Гарантия и возврат</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Кредит и рассрочка</a></li>
+                        <li><a href="#" class="hover:text-brand-500 transition-colors">Контакты</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 -->
+                <div>
+                    <h5 class="text-white text-sm font-semibold mb-4">Мы в соцсетях</h5>
+                    <div class="flex space-x-3 text-lg">
+                        <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-brand-600 text-slate-300 hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-telegram"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-brand-600 text-slate-300 hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-vk"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 bg-slate-800 hover:bg-brand-600 text-slate-300 hover:text-white rounded-lg flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
+                <p>© 2026 TechPro Laptop Store. Все права защищены. Учебный демонстрационный проект.</p>
+            </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Database of laptops
+        const products = [
+            {
+                id: 1,
+                name: 'ASUS ROG Strix G16',
+                category: 'gaming',
+                price: 189990,
+                oldPrice: 209990,
+                image: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Core i7 13700HX', ram: '16 ГБ DDR5', gpu: 'RTX 4070 8GB', ssd: '1 ТБ SSD' },
+                badge: 'Хит продаж'
+            },
+            {
+                id: 2,
+                name: 'Apple MacBook Air 15 M2',
+                category: 'apple',
+                price: 142990,
+                oldPrice: 154990,
+                image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Apple M2 (8 ядер)', ram: '8 ГБ Unified', gpu: 'Apple GPU 10c', ssd: '512 ГБ SSD' },
+                badge: 'Премиум'
+            },
+            {
+                id: 3,
+                name: 'Lenovo Legion Slim 5',
+                category: 'gaming',
+                price: 135990,
+                oldPrice: null,
+                image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Ryzen 7 7840HS', ram: '16 ГБ DDR5', gpu: 'RTX 4060 8GB', ssd: '512 ГБ SSD' },
+                badge: null
+            },
+            {
+                id: 4,
+                name: 'Huawei MateBook X Pro',
+                category: 'ultrabook',
+                price: 129990,
+                oldPrice: 139990,
+                image: 'https://images.unsplash.com/photo-1544731612-de7f96afe55f?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Core i7 1360P', ram: '16 ГБ LPDDR5', gpu: 'Iris Xe Graphics', ssd: '1 ТБ SSD' },
+                badge: 'Ультратонкий'
+            },
+            {
+                id: 5,
+                name: 'Apple MacBook Pro 16 M3 Max',
+                category: 'apple',
+                price: 369990,
+                oldPrice: 389990,
+                image: 'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Apple M3 Max (14 core)', ram: '36 ГБ Unified', gpu: 'Apple GPU 30c', ssd: '1 ТБ SSD' },
+                badge: 'Флагман'
+            },
+            {
+                id: 6,
+                name: 'MSI Modern 15',
+                category: 'work',
+                price: 54990,
+                oldPrice: 62990,
+                image: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Core i5 1235U', ram: '16 ГБ DDR4', gpu: 'Intel Iris Xe', ssd: '512 ГБ SSD' },
+                badge: 'Выгодно'
+            },
+            {
+                id: 7,
+                name: 'ASUS Zenbook 14 OLED',
+                category: 'ultrabook',
+                price: 112990,
+                oldPrice: null,
+                image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Ryzen 7 7730U', ram: '16 ГБ LPDDR4X', gpu: 'Radeon Vega', ssd: '1 ТБ SSD' },
+                badge: 'OLED Экран'
+            },
+            {
+                id: 8,
+                name: 'Dell XPS 13 Plus',
+                category: 'work',
+                price: 178990,
+                oldPrice: 195990,
+                image: 'https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=600&q=80',
+                specs: { cpu: 'Core i7 1360P', ram: '32 ГБ LPDDR5', gpu: 'Iris Xe Graphics', ssd: '1 ТБ SSD' },
+                badge: 'Стиль'
+            }
+        ];
+
+        // State variables
+        let cart = [];
+        let currentCategory = 'all';
+        let searchQuery = '';
+
+        // Format Currency Helper
+        function formatPrice(price) {
+            return price.toLocaleString('ru-RU') + ' ₽';
+        }
+
+        // Render Product Cards Grid
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const emptyState = document.getElementById('emptyState');
+            grid.innerHTML = '';
+
+            const filteredProducts = products.filter(product => {
+                const matchesCategory = (currentCategory === 'all' || product.category === currentCategory);
+                const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      product.specs.cpu.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      product.specs.gpu.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filteredProducts.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+
+                filteredProducts.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = "bg-slate-800/60 border border-slate-700/80 rounded-2xl overflow-hidden flex flex-col justify-between hover:border-brand-500/50 hover:shadow-xl hover:shadow-brand-500/10 transition-all duration-300 group";
+
+                    card.innerHTML = `
+                        <div class="relative overflow-hidden bg-slate-900 h-48 sm:h-52">
+                            ${product.badge ? `<span class="absolute top-3 left-3 z-10 px-2.5 py-1 text-xs font-bold rounded-lg bg-brand-600/90 text-white backdrop-blur-md">${product.badge}</span>` : ''}
+                            <img
+                                src="${product.image}"
+                                alt="${product.name}"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                onerror="this.src='https://placehold.co/600x400/1e293b/ffffff?text=TechPro'"
+                            >
+                        </div>
+
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-white group-hover:text-brand-500 transition-colors line-clamp-1">${product.name}</h3>
+
+                                <!-- Specifications Table -->
+                                <ul class="mt-3 space-y-1.5 text-xs text-slate-300">
+                                    <li class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-microchip text-brand-500 w-4"></i>
+                                        <span>${product.specs.cpu}</span>
+                                    </li>
+                                    <li class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-memory text-brand-500 w-4"></i>
+                                        <span>ОЗУ: ${product.specs.ram}</span>
+                                    </li>
+                                    <li class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-desktop text-brand-500 w-4"></i>
+                                        <span>${product.specs.gpu}</span>
+                                    </li>
+                                    <li class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-hard-drive text-brand-500 w-4"></i>
+                                        <span>Накопитель: ${product.specs.ssd}</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Price and Action Button -->
+                            <div class="pt-3 border-t border-slate-700/60 flex items-center justify-between">
+                                <div>
+                                    ${product.oldPrice ? `<span class="text-xs text-slate-400 line-through block">${formatPrice(product.oldPrice)}</span>` : ''}
+                                    <span class="text-lg font-black text-white">${formatPrice(product.price)}</span>
+                                </div>
+                                <button
+                                    onclick="addToCart(${product.id})"
+                                    class="p-2.5 bg-brand-600/20 hover:bg-brand-600 text-brand-500 hover:text-white rounded-xl transition-all duration-200 flex items-center justify-center border border-brand-500/30 hover:border-transparent"
+                                    title="Добавить в корзину"
+                                >
+                                    <i class="fa-solid fa-cart-plus text-base"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        // Filter by Category
+        function filterCategory(category) {
+            currentCategory = category;
+
+            // Update Active Buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-category') === category) {
+                    btn.className = "filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-brand-600 text-white whitespace-nowrap shadow-md shadow-brand-500/20";
+                } else {
+                    btn.className = "filter-btn px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 bg-slate-800 hover:bg-slate-700 text-slate-300 whitespace-nowrap";
+                }
+            });
+
+            renderProducts();
+        }
+
+        // Search Handling
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value;
+            renderProducts();
+        }
+
+        function handleSearchMobile() {
+            searchQuery = document.getElementById('mobileSearchInput').value;
+            renderProducts();
+        }
+
+        // Add Product to Cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartUI();
+            showToast('Товар добавлен', `${product.name} помещен в корзину`);
+        }
+
+        // Update Cart Count and Render Items
+        function updateCartUI() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            document.getElementById('cartCount').innerText = totalCount;
+            document.getElementById('cartTotalPrice').innerText = formatPrice(totalPrice);
+
+            // Render Cart Modal Items
+            const container = document.getElementById('cartItemsContainer');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-500">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-3"></i>
+                        <p class="text-sm">Ваша корзина пуста</p>
+                    </div>
+                `;
+                return;
+            }
+
+            cart.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = "flex items-center space-x-4 bg-slate-800/50 p-3 rounded-xl border border-slate-800";
+                itemEl.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg bg-slate-900">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-sm font-semibold text-white truncate">${item.name}</h4>
+                        <p class="text-xs text-brand-500 font-bold mt-1">${formatPrice(item.price)}</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <button onclick="changeQuantity(${item.id}, -1)" class="w-6 h-6 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded flex items-center justify-center">-</button>
+                            <span class="text-xs font-semibold px-2 text-slate-200">${item.quantity}</span>
+                            <button onclick="changeQuantity(${item.id}, 1)" class="w-6 h-6 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded flex items-center justify-center">+</button>
+                        </div>
+                    </div>
+                    <button onclick="removeFromCart(${item.id})" class="text-slate-500 hover:text-red-400 p-2">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                `;
+                container.appendChild(itemEl);
+            });
+        }
+
+        // Change Cart Item Quantity
+        function changeQuantity(productId, delta) {
+            const item = cart.find(i => i.id === productId);
+            if (!item) return;
+
+            item.quantity += delta;
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                updateCartUI();
+            }
+        }
+
+        // Remove from Cart
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        // Toggle Modal
+        function toggleCartModal() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Checkout Placeholder
+        function checkout() {
+            if (cart.length === 0) {
+                showToast('Ошибка', 'Добавьте хотя бы один товар в корзину');
+                return;
+            }
+            showToast('Успешно!', 'Ваш заказ оформлен. Менеджер свяжется с вами.');
+            cart = [];
+            updateCartUI();
+            toggleCartModal();
+        }
+
+        // Show Toast Notification
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').innerText = title;
+            document.getElementById('toastDesc').innerText = desc;
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Initialize App on Page Load
+        window.onload = function() {
+            renderProducts();
+            updateCartUI();
+        };
+    </script>
 </body>
 </html>
