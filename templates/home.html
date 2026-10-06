@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .hero-banner {
-            background: linear-gradient(135deg, #2c1246 0%, #3d037a 100%);
+            background: linear-gradient(135deg, #5800b7 0%, #56328d 100%);
             color: #ffffff;
             padding: 60px 0;
             border-radius: 0 0 20px 20px;
@@ -156,7 +156,6 @@
                 <div class="col-12 text-center py-5">
                     <i class="fa-solid fa-laptop-slash fa-3x text-muted mb-3"></i>
                     <h3>Ноутбуки не найдены</h3>
-                    <p class="text-muted">Зайдите в админ-панель Django и добавьте первые товары!</p>
                     {% if user.is_staff %}
                         <a href="/admin/shop/laptop/add/" class="btn btn-primary mt-2">Добавить товар в Админке</a>
                     {% endif %}
